@@ -5,244 +5,715 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b1220">
 <title>SAHAM PRO | BEI Stock Analyzer</title>
+
 <style>
 :root{--bg:#0b1220;--panel:#121e30;--panel2:#19283d;--line:#2a3b52;--text:#eaf1fb;--muted:#9aabc1;--green:#28c889;--red:#f06a75;--yellow:#f3c45c;--blue:#65a9ff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px Arial,sans-serif}
 header{padding:18px 16px;background:#101b2c;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-h1{font-size:22px;margin:0;letter-spacing:1px}header small,.muted,.note{color:var(--muted)}
-main{max-width:1400px;margin:auto;padding:15px}.status{padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:9px;margin-bottom:12px}
+h1{font-size:22px;margin:0;letter-spacing:1px}
+header small,.muted,.note{color:var(--muted)}
+main{max-width:1400px;margin:auto;padding:15px}
+.status{padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:9px;margin-bottom:12px}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
 .card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px;min-width:0}
-.card small{color:var(--muted)}.big{font-size:22px;font-weight:bold;margin-top:8px;overflow-wrap:anywhere}
+.card small{color:var(--muted)}
+.big{font-size:22px;font-weight:bold;margin-top:8px;overflow-wrap:anywhere}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 input,select,button{background:#0d1929;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:11px;font-size:13px}
-input{min-width:130px;flex:1}button{cursor:pointer;background:#19416b;border-color:#315f91}button.primary{background:#176b4a;border-color:#25875f}
-.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.tabs button.active{background:#245b91}
-.panel{margin-bottom:12px}.panel h3{margin:0 0 12px;font-size:14px}
-.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}
+input{min-width:130px;flex:1}
+button{cursor:pointer;background:#19416b;border-color:#315f91}
+button.primary{background:#176b4a;border-color:#25875f}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.tabs button.active{background:#245b91}
+.panel{margin-bottom:12px}
+.panel h3{margin:0 0 12px;font-size:14px}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
 th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-size:12px}
-th{color:#afc0d5;background:#17263a;position:sticky;top:0}th:first-child,td:first-child{text-align:left}
-td:first-child{font-weight:bold;color:var(--blue)}.green{color:var(--green)}.red{color:var(--red)}.yellow{color:var(--yellow)}
-.layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:12px}
-.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px}.kv div{background:var(--panel2);padding:9px;border-radius:6px}
-.kv small{display:block;color:var(--muted);margin-bottom:5px}.note{font-size:11px;line-height:1.5}
-.hidden{display:none!important}.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:5px 9px;font-size:11px;color:var(--muted)}
+th{color:#afc0d5;background:#17263a;position:sticky;top:0}
+th:first-child,td:first-child{text-align:left}
+td:first-child{font-weight:bold;color:var(--blue)}
+td a{color:var(--blue);text-decoration:none}
+.green{color:var(--green)}
+.red{color:var(--red)}
+.yellow{color:var(--yellow)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kv div{background:var(--panel2);padding:9px;border-radius:6px}
+.kv small{display:block;color:var(--muted);margin-bottom:5px}
+.note{font-size:11px;line-height:1.5}
+.hidden{display:none!important}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:5px 9px;font-size:11px;color:var(--muted)}
 footer{padding:14px 2px;color:var(--muted);font-size:11px;line-height:1.5}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:480px){main{padding:9px}header{padding:13px}.big{font-size:19px}}
+.danger{background:#6c2733;border-color:#a94352}
+@media(max-width:850px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px){
+  main{padding:9px}
+  header{padding:13px}
+  .big{font-size:19px}
+}
 </style>
 </head>
+
 <body>
+
 <header>
-  <div><h1>◈ SAHAM PRO</h1><small>BEI STOCK ANALYSIS TERMINAL · BETA</small></div>
+  <div>
+    <h1>◈ SAHAM PRO</h1>
+    <small>BEI STOCK ANALYSIS TERMINAL · BETA</small>
+  </div>
   <span class="pill" id="connection">DATA: MENGHUBUNGKAN</span>
 </header>
+
 <main>
-  <div class="status" id="status">⏳ Menghubungkan ke database Google Sheets...</div>
-  <div class="grid">
-    <div class="card"><small>Total saham terbaca</small><div class="big" id="total">—</div></div>
-    <div class="card"><small>Setup kuat</small><div class="big green" id="strong">—</div></div>
-    <div class="card"><small>Data PBV tersedia</small><div class="big" id="pbvCount">—</div></div>
-    <div class="card"><small>Data PER tersedia</small><div class="big" id="perCount">—</div></div>
+
+<div class="status" id="status">
+  ⏳ Menghubungkan ke database Google Sheets...
+</div>
+
+<div class="grid">
+  <div class="card">
+    <small>Total saham terbaca</small>
+    <div class="big" id="total">—</div>
   </div>
-
-  <div class="tabs">
-    <button class="active" data-tab="screener">Screener</button>
-    <button data-tab="detail">Analisa saham</button>
-    <button data-tab="watch">Watchlist</button>
-    <button data-tab="risk">Kalkulator risiko</button>
+  <div class="card">
+    <small>Setup kuat</small>
+    <div class="big green" id="strong">—</div>
   </div>
+  <div class="card">
+    <small>Data PBV tersedia</small>
+    <div class="big" id="pbvCount">—</div>
+  </div>
+  <div class="card">
+    <small>Data PER tersedia</small>
+    <div class="big" id="perCount">—</div>
+  </div>
+</div>
 
-  <section id="tab-screener">
-    <div class="panel">
-      <h3>SCREENER SAHAM BEI</h3>
-      <div class="toolbar">
-        <input id="keyword" placeholder="Cari kode saham, contoh BBCA">
-        <select id="signalFilter">
-          <option value="">Semua sinyal</option>
-          <option>SETUP KUAT</option><option>SETUP</option><option>WAIT</option><option>HINDARI DULU</option>
-        </select>
-        <select id="sortBy">
-          <option value="Skor">Skor tertinggi</option>
-          <option value="Value">Value terbesar</option>
-          <option value="Volume">Volume terbesar</option>
-          <option value="Change">Change terbesar</option>
-          <option value="Harga">Harga tertinggi</option>
-        </select>
-        <button id="refresh">↻ Refresh</button>
-      </div>
-      <div class="tablewrap">
-        <table><thead><tr>
-          <th>Kode</th><th>Harga</th><th>Change</th><th>Volume</th><th>Value</th><th>Trend</th><th>Skor</th><th>Sinyal</th><th>Entry</th><th>TP</th><th>SL</th><th>Watch</th>
-        </tr></thead><tbody id="stockRows"><tr><td colspan="12" class="muted">Menunggu data...</td></tr></tbody></table>
-      </div>
-      <div class="toolbar"><button id="more">Tampilkan lebih banyak</button><span class="note" id="shown"></span></div>
+<div class="tabs">
+  <button class="active" data-tab="screener">Screener</button>
+  <button data-tab="detail">Analisa saham</button>
+  <button data-tab="watch">Watchlist</button>
+  <button data-tab="risk">Kalkulator risiko</button>
+</div>
+
+<section id="tab-screener">
+  <div class="panel">
+    <h3>SCREENER SAHAM BEI</h3>
+
+    <div class="toolbar">
+      <input id="keyword" placeholder="Cari kode saham, contoh BBCA">
+
+      <select id="signalFilter">
+        <option value="">Semua sinyal</option>
+        <option>SETUP KUAT</option>
+        <option>SETUP</option>
+        <option>WAIT</option>
+        <option>HINDARI DULU</option>
+      </select>
+
+      <select id="sortBy">
+        <option value="Skor">Skor tertinggi</option>
+        <option value="Value">Value terbesar</option>
+        <option value="Volume">Volume terbesar</option>
+        <option value="Change">Change terbesar</option>
+        <option value="Harga">Harga tertinggi</option>
+      </select>
+
+      <button id="refresh">↻ Refresh</button>
     </div>
-  </section>
 
-  <section id="tab-detail" class="hidden">
-    <div class="panel">
-      <h3>ANALISA SATU SAHAM</h3>
-      <div class="toolbar"><input id="symbol" value="BBCA" placeholder="Kode saham"><button class="primary" id="findStock">Cari & Analisa</button></div>
-      <div id="detailStatus" class="note">Masukkan kode saham lalu tekan Cari & Analisa.</div>
-      <div class="grid">
-        <div class="card"><small>Harga</small><div class="big" id="dPrice">—</div></div>
-        <div class="card"><small>Change</small><div class="big" id="dChange">—</div></div>
-        <div class="card"><small>Trend</small><div class="big" id="dTrend">—</div></div>
-        <div class="card"><small>Sinyal</small><div class="big" id="dSignal">—</div></div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Harga</th>
+            <th>Change</th>
+            <th>Volume</th>
+            <th>Value</th>
+            <th>Trend</th>
+            <th>Skor</th>
+            <th>Sinyal</th>
+            <th>Entry</th>
+            <th>TP</th>
+            <th>SL</th>
+            <th>Watch</th>
+          </tr>
+        </thead>
+        <tbody id="stockRows">
+          <tr><td colspan="12" class="muted">Menunggu data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="toolbar">
+      <button id="more">Tampilkan lebih banyak</button>
+      <span class="note" id="shown"></span>
+    </div>
+  </div>
+</section>
+
+<section id="tab-detail" class="hidden">
+  <div class="panel">
+    <h3>ANALISA SATU SAHAM</h3>
+
+    <div class="toolbar">
+      <input id="symbol" value="BBCA" placeholder="Kode saham">
+      <button class="primary" id="findStock">Cari & Analisa</button>
+    </div>
+
+    <div id="detailStatus" class="note">
+      Masukkan kode saham lalu tekan Cari & Analisa.
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <small>Harga</small>
+        <div class="big" id="dPrice">—</div>
       </div>
-      <div class="kv" id="detailLevels"></div>
-    </div>
-  </section>
-
-  <section id="tab-watch" class="hidden">
-    <div class="panel"><h3>WATCHLIST PERANGKAT INI</h3>
-      <div class="toolbar"><input id="watchCode" placeholder="Kode saham"><button id="addWatch" class="primary">Tambah</button></div>
-      <div id="watchItems" class="toolbar"></div>
-      <p class="note">Watchlist tersimpan di browser/perangkat ini.</p>
-    </div>
-  </section>
-
-  <section id="tab-risk" class="hidden">
-    <div class="panel"><h3>KALKULATOR RISIKO & LOT</h3>
-      <div class="grid">
-        <label>Modal (Rp)<input id="capital" type="number" value="1000000"></label>
-        <label>Risiko (%)<input id="riskPct" type="number" value="1" step="0.1"></label>
-        <label>Harga entry<input id="entry" type="number" placeholder="Contoh 500"></label>
-        <label>Stop loss<input id="stop" type="number" placeholder="Contoh 475"></label>
+      <div class="card">
+        <small>Change</small>
+        <div class="big" id="dChange">—</div>
       </div>
-      <button id="calculate" class="primary">Hitung lot</button>
-      <div class="status" id="riskResult">Masukkan modal, entry, dan stop loss.</div>
-      <p class="note">Perhitungan indikatif, belum termasuk fee broker dan slippage.</p>
+      <div class="card">
+        <small>Trend</small>
+        <div class="big" id="dTrend">—</div>
+      </div>
+      <div class="card">
+        <small>Sinyal</small>
+        <div class="big" id="dSignal">—</div>
+      </div>
     </div>
-  </section>
 
-  <footer>
-    Sumber data: Google Sheets melalui Google Apps Script. Data mengikuti pembaruan spreadsheet dan bukan data real-time bursa. Sinyal, entry, TP, dan SL merupakan referensi sistem, bukan rekomendasi transaksi. Selalu cek ulang sebelum membeli atau menjual.
-  </footer>
+    <div class="kv" id="detailLevels"></div>
+  </div>
+</section>
+
+<section id="tab-watch" class="hidden">
+  <div class="panel">
+    <h3>WATCHLIST PERANGKAT INI</h3>
+
+    <div class="toolbar">
+      <input id="watchCode" placeholder="Kode saham">
+      <button id="addWatch" class="primary">Tambah</button>
+    </div>
+
+    <div id="watchItems" class="toolbar"></div>
+
+    <p class="note">Watchlist tersimpan di browser/perangkat ini.</p>
+  </div>
+</section>
+
+<section id="tab-risk" class="hidden">
+  <div class="panel">
+    <h3>KALKULATOR RISIKO & LOT</h3>
+
+    <div class="grid">
+      <label>Modal (Rp)
+        <input id="capital" type="number" value="1000000">
+      </label>
+
+      <label>Risiko (%)
+        <input id="riskPct" type="number" value="1" step="0.1">
+      </label>
+
+      <label>Harga entry
+        <input id="entry" type="number" placeholder="Contoh 500">
+      </label>
+
+      <label>Stop loss
+        <input id="stop" type="number" placeholder="Contoh 475">
+      </label>
+    </div>
+
+    <button id="calculate" class="primary">Hitung lot</button>
+
+    <div class="status" id="riskResult">
+      Masukkan modal, entry, dan stop loss.
+    </div>
+
+    <p class="note">
+      Perhitungan indikatif, belum termasuk fee broker dan slippage.
+    </p>
+  </div>
+</section>
+
+<footer>
+  Sumber data: Google Sheets melalui Google Apps Script.
+  Data mengikuti pembaruan spreadsheet dan bukan data real-time bursa.
+  Sinyal, entry, TP, dan SL merupakan referensi sistem, bukan rekomendasi transaksi.
+  Selalu cek ulang sebelum membeli atau menjual.
+</footer>
+
 </main>
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzagt-5OAd9QPON1IBA50xdE7z9akI9d3XQHev44bLmmyYZdn8ZDdZDe1wwO09tUy5B/exec";
-let allStocks = [], visibleCount = 50;
+
+let allStocks = [];
+let visibleCount = 50;
+
+/* UTILITAS */
+
 const $ = id => document.getElementById(id);
-const number = v => { if(v===null||v===undefined||v==="") return null; const n=Number(String(v).replace(/,/g,"")); return Number.isFinite(n)?n:null; };
-const rupiah = v => v==null ? "—" : "Rp "+Number(v).toLocaleString("id-ID",{maximumFractionDigits:2});
-const fmt = v => v==null ? "—" : Number(v).toLocaleString("id-ID",{maximumFractionDigits:2});
-function jsonp(params){
-  return new Promise((resolve,reject)=>{
-    const callback="sahamProCb_"+Date.now()+"_"+Math.floor(Math.random()*100000);
-    const script=document.createElement("script");
-    const timer=setTimeout(()=>{cleanup();reject(new Error("Waktu koneksi habis"));},25000);
-    function cleanup(){clearTimeout(timer);delete window[callback];script.remove();}
-    window[callback]=data=>{cleanup();resolve(data);};
-    script.onerror=()=>{cleanup();reject(new Error("Gagal mengakses Apps Script"));};
-    const query=new URLSearchParams({...params,callback});
-    script.src=API_URL+"?"+query.toString();
-    document.body.appendChild(script);
+
+const number = v => {
+  if (v === null || v === undefined || v === "") return null;
+  const n = Number(String(v).replace(/,/g, ""));
+  return Number.isFinite(n) ? n : null;
+};
+
+const rupiah = v =>
+  v == null ? "—" :
+  "Rp " + Number(v).toLocaleString("id-ID", {
+    maximumFractionDigits: 2
   });
+
+const fmt = v =>
+  v == null ? "—" :
+  Number(v).toLocaleString("id-ID", {
+    maximumFractionDigits: 2
+  });
+
+function val(o, ...keys) {
+  for (const k of keys) {
+    if (o && o[k] !== undefined && o[k] !== null) {
+      return o[k];
+    }
+  }
+  return null;
 }
-function val(o,...keys){for(const k of keys){if(o&&o[k]!==undefined&&o[k]!==null)return o[k];}return null;}
-function normalize(o){
+
+/* JSONP: CALLBACK TETAP + ANTREAN REQUEST */
+
+let jsonpQueue = Promise.resolve();
+
+function jsonp(params) {
+  const request = jsonpQueue.then(() =>
+    new Promise((resolve, reject) => {
+      const callback = "sahamProCallback";
+      const script = document.createElement("script");
+      let selesai = false;
+      let timer;
+
+      function cleanup() {
+        clearTimeout(timer);
+        delete window[callback];
+        script.onerror = null;
+        script.remove();
+      }
+
+      timer = setTimeout(() => {
+        if (selesai) return;
+        selesai = true;
+        cleanup();
+        reject(new Error("Timeout: Apps Script tidak merespons"));
+      }, 30000);
+
+      window[callback] = function(data) {
+        if (selesai) return;
+        selesai = true;
+        cleanup();
+        resolve(data);
+      };
+
+      script.onerror = function() {
+        if (selesai) return;
+        selesai = true;
+        cleanup();
+        reject(new Error("JSONP gagal dimuat. Periksa akses Web App."));
+      };
+
+      const query = new URLSearchParams({
+        ...params,
+        callback: callback
+      });
+
+      script.src = API_URL + "?" + query.toString();
+      document.body.appendChild(script);
+    })
+  );
+
+  jsonpQueue = request.catch(() => {});
+  return request;
+}
+
+/* NORMALISASI DATA */
+
+function normalize(o) {
+  const rawChange = number(
+    val(o, "Change", "Change %", "change", "changePercent")
+  );
+
   return {
-    raw:o, code:String(val(o,"Kode","kode","symbol","Symbol")||"").toUpperCase(),
-    price:number(val(o,"Harga","harga","price","Price")),
-    change:number(val(o,"Change","Change %","change","changePercent")),
-    volume:number(val(o,"Volume","volume")),
-    value:number(val(o,"Value","Value Est.","value")),
-    trend:val(o,"Trend","trend")||"—", score:number(val(o,"Skor","Score","score")),
-    signal:val(o,"Sinyal","Signal","signal")||"—",
-    entry:number(val(o,"Entry Referensi","Entry","entry")),
-    tp:number(val(o,"TP Referensi","TP","tp")),
-    sl:number(val(o,"SL Referensi","SL","sl")),
-    spike:number(val(o,"Volume Spike","VolumeSpike","volumeSpike")),
-    ma20:number(val(o,"MA20","ma20")),ma50:number(val(o,"MA50","ma50")),
-    support:number(val(o,"Support","support")),resistance:number(val(o,"Resistance","resistance")),
-    pbv:number(val(o,"PBV","pbv")),per:number(val(o,"PER","per")),
-    roe:number(val(o,"ROE %","ROE","roe")),eps:number(val(o,"EPS","eps")),bvps:number(val(o,"BVPS","bvps"))
+    raw: o,
+
+    code: String(
+      val(o, "Kode", "kode", "symbol", "Symbol") || ""
+    ).toUpperCase(),
+
+    price: number(val(o, "Harga", "harga", "price", "Price")),
+
+    change: rawChange === null ? null : rawChange * 100,
+
+    volume: number(val(o, "Volume", "volume")),
+
+    value: number(val(o, "Value", "Value Est.", "value")),
+
+    trend: val(o, "Trend", "trend") || "—",
+
+    score: number(val(o, "Skor", "Score", "score")),
+
+    signal: val(o, "Sinyal", "Signal", "signal") || "—",
+
+    entry: number(val(o, "Entry Referensi", "Entry", "entry")),
+
+    tp: number(val(o, "TP Referensi", "TP", "tp")),
+
+    sl: number(val(o, "SL Referensi", "SL", "sl")),
+
+    spike: number(val(o, "Volume Spike", "VolumeSpike", "volumeSpike")),
+
+    ma20: number(val(o, "MA20", "ma20")),
+
+    ma50: number(val(o, "MA50", "ma50")),
+
+    support: number(val(o, "Support", "support")),
+
+    resistance: number(val(o, "Resistance", "resistance")),
+
+    pbv: number(val(o, "PBV", "pbv")),
+
+    per: number(val(o, "PER", "per")),
+
+    roe: number(val(o, "ROE %", "ROE", "roe")),
+
+    eps: number(val(o, "EPS", "eps")),
+
+    bvps: number(val(o, "BVPS", "bvps"))
   };
 }
-function displayStatus(msg,ok=false){$("status").textContent=msg;$("connection").textContent=ok?"DATA: TERHUBUNG":"DATA: PERIKSA";$("connection").className="pill "+(ok?"green":"yellow");}
-async function loadData(){
+
+/* STATUS KONEKSI */
+
+function displayStatus(msg, ok = false) {
+  $("status").textContent = msg;
+
+  $("connection").textContent =
+    ok ? "DATA: TERHUBUNG" : "DATA: PERIKSA";
+
+  $("connection").className =
+    "pill " + (ok ? "green" : "yellow");
+}
+
+/* LOAD DATA SCREENER */
+
+async function loadData() {
   displayStatus("⏳ Mengambil data screener dari Google Sheets...");
-  try{
-    const result=await jsonp({action:"screener"});
-    if(result.success===false||result.sukses===false)throw new Error(result.error||result.pesan||"API mengembalikan error");
-    const rows=Array.isArray(result.data)?result.data:(Array.isArray(result.stocks)?result.stocks:[]);
-    allStocks=rows.map(normalize).filter(x=>x.code);
-    if(!allStocks.length)throw new Error("Data saham kosong atau format API tidak sesuai");
-    $("total").textContent=allStocks.length.toLocaleString("id-ID");
-    $("strong").textContent=allStocks.filter(x=>String(x.signal).toUpperCase().includes("KUAT")).length;
-    $("pbvCount").textContent=allStocks.filter(x=>x.pbv!==null).length;
-    $("perCount").textContent=allStocks.filter(x=>x.per!==null).length;
-    displayStatus("✅ Database terhubung · "+allStocks.length+" saham · "+new Date().toLocaleString("id-ID"),true);
+
+  $("refresh").disabled = true;
+
+  try {
+    const result = await jsonp({
+      action: "screener"
+    });
+
+    if (!result || result.success === false || result.sukses === false) {
+      throw new Error(
+        result?.error || result?.pesan || "API mengembalikan error"
+      );
+    }
+
+    const rows = Array.isArray(result.data)
+      ? result.data
+      : Array.isArray(result.stocks)
+        ? result.stocks
+        : [];
+
+    allStocks = rows.map(normalize).filter(x => x.code);
+
+    if (!allStocks.length) {
+      throw new Error("Data saham kosong atau format API tidak sesuai");
+    }
+
+    $("total").textContent =
+      allStocks.length.toLocaleString("id-ID");
+
+    $("strong").textContent =
+      allStocks.filter(x =>
+        String(x.signal).toUpperCase().includes("KUAT")
+      ).length;
+
+    $("pbvCount").textContent =
+      allStocks.filter(x => x.pbv !== null).length;
+
+    $("perCount").textContent =
+      allStocks.filter(x => x.per !== null).length;
+
+    displayStatus(
+      "✅ Database terhubung · " +
+      allStocks.length +
+      " saham · " +
+      new Date().toLocaleString("id-ID"),
+      true
+    );
+
+    visibleCount = 50;
     renderStocks();
-  }catch(e){displayStatus("❌ "+e.message+" · Periksa deployment dan akses Apps Script.");}
+
+  } catch (e) {
+    displayStatus(
+      "❌ " + e.message + " · Periksa deployment dan akses Apps Script."
+    );
+  } finally {
+    $("refresh").disabled = false;
+  }
 }
-function renderStocks(){
-  const q=$("keyword").value.trim().toUpperCase(),sig=$("signalFilter").value,sort=$("sortBy").value;
-  let list=allStocks.filter(s=>(!q||s.code.includes(q))&&(!sig||String(s.signal).toUpperCase().includes(sig)));
-  list.sort((a,b)=>(number(b[sort.toLowerCase()])??-Infinity)-(number(a[sort.toLowerCase()])??-Infinity));
-  const shown=list.slice(0,visibleCount);
-  $("stockRows").innerHTML=shown.length?shown.map(s=>`<tr>
-    <td><a href="#" onclick="openDetail('${s.code}');return false">${s.code}</a></td>
-    <td>${rupiah(s.price)}</td><td class="${(s.change||0)>=0?'green':'red'}">${s.change==null?'—':fmt(s.change)+'%'}</td>
-    <td>${fmt(s.volume)}</td><td>${rupiah(s.value)}</td><td>${s.trend}</td>
-    <td>${fmt(s.score)}</td><td>${s.signal}</td><td>${rupiah(s.entry)}</td><td>${rupiah(s.tp)}</td><td>${rupiah(s.sl)}</td>
-    <td><button onclick="toggleWatch('${s.code}')">${isWatched(s.code)?'★':'☆'}</button></td></tr>`).join(""):'<tr><td colspan="12" class="muted">Tidak ada saham yang cocok.</td></tr>';
-  $("shown").textContent="Menampilkan "+shown.length+" dari "+list.length+" saham.";
+
+/* RENDER DAN SORTING */
+
+function renderStocks() {
+  const q = $("keyword").value.trim().toUpperCase();
+  const sig = $("signalFilter").value;
+  const sort = $("sortBy").value;
+
+  const sortKey = {
+    "Skor": "score",
+    "Value": "value",
+    "Volume": "volume",
+    "Change": "change",
+    "Harga": "price"
+  }[sort] || "score";
+
+  let list = allStocks.filter(s =>
+    (!q || s.code.includes(q)) &&
+    (!sig || String(s.signal).toUpperCase().includes(sig))
+  );
+
+  list.sort((a, b) =>
+    (number(b[sortKey]) ?? -Infinity) -
+    (number(a[sortKey]) ?? -Infinity)
+  );
+
+  const shown = list.slice(0, visibleCount);
+
+  $("stockRows").innerHTML = shown.length
+    ? shown.map(s => `<tr>
+        <td><a href="#" onclick="openDetail('${s.code}');return false">${s.code}</a></td>
+        <td>${rupiah(s.price)}</td>
+        <td class="${(s.change || 0) >= 0 ? "green" : "red"}">${s.change == null ? "—" : fmt(s.change) + "%"}</td>
+        <td>${fmt(s.volume)}</td>
+        <td>${rupiah(s.value)}</td>
+        <td>${s.trend}</td>
+        <td>${fmt(s.score)}</td>
+        <td>${s.signal}</td>
+        <td>${rupiah(s.entry)}</td>
+        <td>${rupiah(s.tp)}</td>
+        <td>${rupiah(s.sl)}</td>
+        <td><button onclick="toggleWatch('${s.code}')">${isWatched(s.code) ? "★" : "☆"}</button></td>
+      </tr>`).join("")
+    : '<tr><td colspan="12" class="muted">Tidak ada saham yang cocok.</td></tr>';
+
+  $("shown").textContent =
+    "Menampilkan " + shown.length + " dari " + list.length + " saham.";
 }
-async function openDetail(code){
-  $("symbol").value=code;showTab("detail");await findStock();
+
+/* DETAIL SAHAM */
+
+async function openDetail(code) {
+  $("symbol").value = code;
+  showTab("detail");
+  await findStock();
 }
-async function findStock(){
-  const code=$("symbol").value.trim().toUpperCase();if(!code)return;
-  $("detailStatus").textContent="Mengambil data "+code+"...";
-  try{
-    const r=await jsonp({action:"stock",symbol:code});
-    if(r.success===false||!r.data)throw new Error(r.error||"Kode tidak ditemukan");
-    const s=normalize(r.data);
-    $("detailStatus").textContent="Data ditemukan · baris spreadsheet "+(r.row||"—");
-    $("dPrice").textContent=rupiah(s.price);$("dChange").textContent=s.change==null?"—":fmt(s.change)+"%";
-    $("dChange").className="big "+((s.change||0)>=0?"green":"red");
-    $("dTrend").textContent=s.trend;$("dSignal").textContent=s.signal;
-    $("detailLevels").innerHTML=[
-      ["Volume",fmt(s.volume)],["Value",rupiah(s.value)],["Volume Spike",fmt(s.spike)],
-      ["MA20",rupiah(s.ma20)],["MA50",rupiah(s.ma50)],["Support",rupiah(s.support)],
-      ["Resistance",rupiah(s.resistance)],["Entry referensi",rupiah(s.entry)],
-      ["Take profit",rupiah(s.tp)],["Stop loss",rupiah(s.sl)],["PBV",fmt(s.pbv)],
-      ["PER",fmt(s.per)],["ROE",s.roe==null?"—":fmt(s.roe)+"%"],["EPS",fmt(s.eps)],["BVPS",fmt(s.bvps)]
-    ].map(x=>`<div><small>${x[0]}</small><b>${x[1]}</b></div>`).join("");
-  }catch(e){$("detailStatus").textContent="❌ "+e.message;}
+
+async function findStock() {
+  const code = $("symbol").value.trim().toUpperCase();
+
+  if (!code) return;
+
+  $("detailStatus").textContent = "Mengambil data " + code + "...";
+
+  try {
+    const r = await jsonp({
+      action: "stock",
+      symbol: code
+    });
+
+    if (!r || r.success === false || !r.data) {
+      throw new Error(r?.error || "Kode tidak ditemukan");
+    }
+
+    const s = normalize(r.data);
+
+    $("detailStatus").textContent =
+      "Data ditemukan · baris spreadsheet " + (r.row || "—");
+
+    $("dPrice").textContent = rupiah(s.price);
+
+    $("dChange").textContent =
+      s.change == null ? "—" : fmt(s.change) + "%";
+
+    $("dChange").className =
+      "big " + ((s.change || 0) >= 0 ? "green" : "red");
+
+    $("dTrend").textContent = s.trend;
+    $("dSignal").textContent = s.signal;
+
+    $("detailLevels").innerHTML = [
+      ["Volume", fmt(s.volume)],
+      ["Value", rupiah(s.value)],
+      ["Volume Spike", fmt(s.spike)],
+      ["MA20", rupiah(s.ma20)],
+      ["MA50", rupiah(s.ma50)],
+      ["Support", rupiah(s.support)],
+      ["Resistance", rupiah(s.resistance)],
+      ["Entry referensi", rupiah(s.entry)],
+      ["Take profit", rupiah(s.tp)],
+      ["Stop loss", rupiah(s.sl)],
+      ["PBV", fmt(s.pbv)],
+      ["PER", fmt(s.per)],
+      ["ROE", s.roe == null ? "—" : fmt(s.roe) + "%"],
+      ["EPS", fmt(s.eps)],
+      ["BVPS", fmt(s.bvps)]
+    ].map(x =>
+      `<div><small>${x[0]}</small><b>${x[1]}</b></div>`
+    ).join("");
+
+  } catch (e) {
+    $("detailStatus").textContent = "❌ " + e.message;
+  }
 }
-function getWatch(){try{return JSON.parse(localStorage.getItem("sahampro_watch")||"[]");}catch(e){return[];}}
-function saveWatch(a){localStorage.setItem("sahampro_watch",JSON.stringify(a));renderWatch();renderStocks();}
-function isWatched(c){return getWatch().includes(c);}
-function toggleWatch(c){let a=getWatch();a=isWatched(c)?a.filter(x=>x!==c):[...a,c];saveWatch(a);}
-function renderWatch(){
-  const a=getWatch();$("watchItems").innerHTML=a.length?a.map(c=>`<button onclick="openDetail('${c}')">${c}</button><button class="danger" onclick="toggleWatch('${c}')">Hapus</button>`).join(""):'<span class="muted">Watchlist masih kosong.</span>';
+
+/* WATCHLIST */
+
+function getWatch() {
+  try {
+    return JSON.parse(localStorage.getItem("sahampro_watch") || "[]");
+  } catch (e) {
+    return [];
+  }
 }
-function showTab(name){
-  document.querySelectorAll('[id^="tab-"]').forEach(x=>x.classList.add("hidden"));
-  $("tab-"+name).classList.remove("hidden");
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+
+function saveWatch(a) {
+  localStorage.setItem("sahampro_watch", JSON.stringify(a));
+  renderWatch();
+  renderStocks();
 }
-document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
-$("refresh").addEventListener("click",loadData);
-$("keyword").addEventListener("input",()=>{visibleCount=50;renderStocks();});
-$("signalFilter").addEventListener("change",()=>{visibleCount=50;renderStocks();});
-$("sortBy").addEventListener("change",renderStocks);
-$("more").addEventListener("click",()=>{visibleCount+=50;renderStocks();});
-$("findStock").addEventListener("click",findStock);
-$("symbol").addEventListener("keydown",e=>{if(e.key==="Enter")findStock();});
-$("addWatch").addEventListener("click",()=>{const c=$("watchCode").value.trim().toUpperCase();if(c&&!isWatched(c))saveWatch([...getWatch(),c]);$("watchCode").value="";});
-$("calculate").addEventListener("click",()=>{
-  const capital=number($("capital").value),riskPct=number($("riskPct").value),entry=number($("entry").value),stop=number($("stop").value);
-  if(!(capital>0&&riskPct>0&&entry>0&&stop>0&&entry>stop)){$("riskResult").textContent="Isi angka yang valid. Stop loss harus di bawah entry.";return;}
-  const riskMoney=capital*riskPct/100,lossPerLot=(entry-stop)*100,lot=Math.floor(riskMoney/lossPerLot),cost=lot*100*entry;
-  $("riskResult").innerHTML=`Risiko maksimal: <b>${rupiah(riskMoney)}</b><br>Jumlah: <b>${lot.toLocaleString("id-ID")} lot</b><br>Estimasi modal terpakai: <b>${rupiah(cost)}</b><br>Estimasi risiko jika SL tersentuh: <b>${rupiah(lot*lossPerLot)}</b>`;
+
+function isWatched(c) {
+  return getWatch().includes(c);
+}
+
+function toggleWatch(c) {
+  let a = getWatch();
+
+  a = isWatched(c)
+    ? a.filter(x => x !== c)
+    : [...a, c];
+
+  saveWatch(a);
+}
+
+function renderWatch() {
+  const a = getWatch();
+
+  $("watchItems").innerHTML = a.length
+    ? a.map(c =>
+        `<button onclick="openDetail('${c}')">${c}</button>
+         <button class="danger" onclick="toggleWatch('${c}')">Hapus</button>`
+      ).join("")
+    : '<span class="muted">Watchlist masih kosong.</span>';
+}
+
+/* NAVIGASI TAB */
+
+function showTab(name) {
+  document.querySelectorAll('[id^="tab-"]').forEach(x =>
+    x.classList.add("hidden")
+  );
+
+  $("tab-" + name).classList.remove("hidden");
+
+  document.querySelectorAll(".tabs button").forEach(b =>
+    b.classList.toggle("active", b.dataset.tab === name)
+  );
+}
+
+/* EVENT LISTENER */
+
+document.querySelectorAll(".tabs button").forEach(b =>
+  b.addEventListener("click", () => showTab(b.dataset.tab))
+);
+
+$("refresh").addEventListener("click", loadData);
+
+$("keyword").addEventListener("input", () => {
+  visibleCount = 50;
+  renderStocks();
 });
-renderWatch();loadData();
+
+$("signalFilter").addEventListener("change", () => {
+  visibleCount = 50;
+  renderStocks();
+});
+
+$("sortBy").addEventListener("change", renderStocks);
+
+$("more").addEventListener("click", () => {
+  visibleCount += 50;
+  renderStocks();
+});
+
+$("findStock").addEventListener("click", findStock);
+
+$("symbol").addEventListener("keydown", e => {
+  if (e.key === "Enter") findStock();
+});
+
+$("addWatch").addEventListener("click", () => {
+  const c = $("watchCode").value.trim().toUpperCase();
+
+  if (c && !isWatched(c)) {
+    saveWatch([...getWatch(), c]);
+  }
+
+  $("watchCode").value = "";
+});
+
+$("calculate").addEventListener("click", () => {
+  const capital = number($("capital").value);
+  const riskPct = number($("riskPct").value);
+  const entry = number($("entry").value);
+  const stop = number($("stop").value);
+
+  if (!(capital > 0 && riskPct > 0 && entry > 0 && stop > 0 && entry > stop)) {
+    $("riskResult").textContent =
+      "Isi angka yang valid. Stop loss harus di bawah entry.";
+    return;
+  }
+
+  const riskMoney = capital * riskPct / 100;
+  const lossPerLot = (entry - stop) * 100;
+  const lot = Math.floor(riskMoney / lossPerLot);
+  const cost = lot * 100 * entry;
+
+  $("riskResult").innerHTML = `
+    Risiko maksimal: <b>${rupiah(riskMoney)}</b><br>
+    Jumlah: <b>${lot.toLocaleString("id-ID")} lot</b><br>
+    Estimasi modal terpakai: <b>${rupiah(cost)}</b><br>
+    Estimasi risiko jika SL tersentuh: <b>${rupiah(lot * lossPerLot)}</b>
+  `;
+});
+
+/* JALANKAN APLIKASI */
+
+renderWatch();
+loadData();
+
 </script>
 </body>
-</html>
+  </html>
+  
